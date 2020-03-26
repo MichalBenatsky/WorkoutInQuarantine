@@ -1,0 +1,16 @@
+:root {
+    --color0: #222831;
+    --color1: #393e46;
+    --color2: #d65a31;
+    --color3: #eeeeee;
+  }
+
+body {font-family: 'Open Sans', sans-serif; background-color: var(--color0);}
+h1 {color: var(--color2); margin:auto; display: block;}
+
+.buttons {width: 200px; height: 200px; display: flex; font-size: 2em;}
+.button {width: 50%; height: 100%;}
+.button:hover{cursor: pointer;}
+.plus {background-color: var(--color1);}
+.minus {background-color: var(--color2);}
+img {fill: red;}
