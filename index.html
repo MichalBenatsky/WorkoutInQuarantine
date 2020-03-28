@@ -11,19 +11,13 @@
   <body>
     <h1>Workout Tracker</h1>
     <div id="app">
-        <div class="counter">
-            <h2>{{ type }}</h2>
-            <img src="img/pullUp.svg" >
-            {{ amount }}
-            <div class="buttons">
-                <div class="plus button" v-on:click="addWorkout">
-                    +
-                </div>
-                <div class="minus button" v-on:click="subWorkout">
-                    -
-                </div>
-            </div>
+      <div class="counter">
+        <h2>{{ type }}</h2>
+        <h3>{{ amount }}</h3>
+        <div class="stack">
+          <img class="stackUp" src="img/pullUp.svg" v-on:click="click" >
         </div>
+      </div>
     </div>
 
     <script src="script.js"></script>
