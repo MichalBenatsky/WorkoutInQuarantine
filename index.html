@@ -10,14 +10,16 @@
   </head>
   <body>
     <h1>Workout Tracker</h1>
+    <select id="sportsmen">
+      <option value="andrej">Andrej</option>
+      <option value="rosta">Rosta</option>
+      <option value="martin">Martin</option>
+      <option value="michal">Michal</option>
+    </select>
     <div id="app">
-      <div class="counter">
-        <h2>{{ type }}</h2>
-        <h3>{{ amount }}</h3>
-        <div class="stack">
-          <img class="stackUp" src="img/pullUp.svg" v-on:click="click" >
-        </div>
-      </div>
+      <workoutcounter type="PushUp" imgsrc="img/PushUp.svg"></workoutcounter>
+      <workoutcounter type="PullUp" imgsrc="img/PullUp.svg"></workoutcounter>
+      <workoutcounter type="Squat"  imgsrc="img/squat.svg"></workoutcounter>
     </div>
 
     <script src="script.js"></script>
