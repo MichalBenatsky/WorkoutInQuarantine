@@ -17,11 +17,15 @@
       <option value="michal">Michal</option>
     </select>
     <div id="app">
-      <workoutcounter type="PushUp" imgsrc="img/PushUp.svg"></workoutcounter>
-      <workoutcounter type="PullUp" imgsrc="img/PullUp.svg"></workoutcounter>
-      <workoutcounter type="Squat"  imgsrc="img/squat.svg"></workoutcounter>
+      <workoutcounter v-for="workout in workouts"
+      v-bind:type="workout.type"
+      v-bind:imgsrc="workout.imgsrc"
+      v-bind:amount="workout.amount"
+      v-bind:id="workout.id"
+      v-on:event_child="eventChild"></workoutcounter>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

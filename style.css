@@ -8,10 +8,10 @@
   }
 
 body {font-family: 'Open Sans', sans-serif; background-color: var(--color0);margin: 0px;}
-h1 {color: var(--color2); margin:auto; display: block;}
+h1 {color: var(--color4); margin:auto; display: block;}
 h3 {color: var(--color3);}
-#app {background-color: var(--color1); width: 100%; text-align: center; display: flex; flex-wrap: wrap; justify-content: space-evenly;}
-.counter {margin-right: 5px; margin-left: 5pxs; background-color: var(--color2);}
+#app {background-color: var(--color0); width: 100%; text-align: center; display: flex; flex-wrap: wrap; justify-content: space-evenly;}
+.counter {margin-right: 5px; margin-left: 5pxs; background-color: var(--color1);}
 .buttons {width: 200px; height: 200px; display: flex; font-size: 2em;}
 .button {width: 50%; height: 100%; opacity: 0.5; }
 .button:hover{cursor: pointer;}
