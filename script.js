@@ -47,7 +47,6 @@ function setData(data)
     el: '#app',
     methods: {
       eventChild: function(id, change) {
-
         if (change === "add")
           this.workouts[id].amount = this.workouts[id].amount + this.plusValue;
         else
