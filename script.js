@@ -1,66 +1,68 @@
+Vue.component('workoutcounter', {
+  props: ['id', 'type', 'imgsrc', 'amount'],
+  template: ` <div class="counter" v-on:click="click">
+                <h2>{{ type }}</h2>
+                <h3>{{ amount }}</h3>
+                <div class="stack">
+                  <img class="stackUp" v-bind:src="imgsrc"  >
+                </div>
+              </div>`,
+  methods: {
+    click: function (e) {
+      let rect = e.target.getBoundingClientRect();
+      let sizeX = rect.right - rect.left;
+      let x = e.clientX - rect.left; 
 
-function setData(data)
-{
+      let dataChange = "sub";
+      if (x >= sizeX / 2)
+      {
+        dataChange = "add";
+      }
 
-  Vue.component('workoutcounter', {
-    props: ['id', 'type', 'imgsrc', 'amount'],
-    template: ` <div class="counter" v-on:click="click">
-                  <h2>{{ type }}</h2>
-                  <h3>{{ amount }}</h3>
-                  <div class="stack">
-                    <img class="stackUp" v-bind:src="imgsrc"  >
-                  </div>
-                </div>`,
-    methods: {
-      click: function (e) {
-        let rect = e.target.getBoundingClientRect();
-        let sizeX = rect.right - rect.left;
-        let x = e.clientX - rect.left; 
-  
-        let dataChange = "sub";
-        if (x >= sizeX / 2)
-        {
-          dataChange = "add";
-        }
-        //   this.amount = this.amount + this.plusValue;
-        // else
-        //   this.amount = this.amount - this.minusValue;
-  
-        // this.amount = Math.max(0, this.amount);
-  
-        this.$emit('event_child', this.id, dataChange)
-      },
+      this.$emit('event_child', this.id, dataChange)
     },
-    
-  });
+  },
+  
+});
 
-  let app = new Vue({
-    data: {
-      workouts: [
-        { id:0, type: 'PushUp', imgsrc:'img/pushUp.svg', amount: data.pushUp},
-        { id:1, type: 'PullUp', imgsrc:'img/pullUp.svg', amount: data.pullUp},
-        { id:2, type: 'Squat', imgsrc:'img/squat.svg', amount: data.squat}
-      ],
-      plusValue: 5,
-      minusValue: 1
+let app = new Vue({
+  data: {
+    workouts: [
+      { id:0, type: 'pushUp', imgsrc:'img/pushUp.svg', amount: 0},
+      { id:1, type: 'pullUp', imgsrc:'img/pullUp.svg', amount: 0},
+      { id:2, type: 'squat', imgsrc:'img/squat.svg', amount: 0}
+    ],
+    plusValue: 5,
+    minusValue: 1
+  },
+  el: '#app',
+  methods: {
+    eventChild: function(id, change) 
+    {
+      if (change === "add")
+        this.workouts[id].amount = this.workouts[id].amount + this.plusValue;
+      else
+        this.workouts[id].amount = this.workouts[id].amount - this.minusValue;
     },
-    el: '#app',
-    methods: {
-      eventChild: function(id, change) {
-        if (change === "add")
-          this.workouts[id].amount = this.workouts[id].amount + this.plusValue;
-        else
-          this.workouts[id].amount = this.workouts[id].amount - this.minusValue;
+    setData: function(jsonData)
+    {
+      let hashMap = [];
+      for (let i = 0; i < this.workouts.length; ++i)
+        hashMap[this.workouts.type] = this.workouts[i];
+      
+      for (let i = 0; i < this.workouts.length; ++i)
+      {
+        this.workouts[i].amount = jsonData[this.workouts[i].type];
       }
     }
-  })
-}
+  }
+})
 
-$( document ).ready(function() {
-  let formData = { "person": $("#sportsmen").val()};
+function updateData()
+{
+  let formData = { "person": $("#sportsmen").val(), "command" : "READ"};
   console.log(formData);
   
-
   // process the form
   $.ajax({
     type : 'POST',
@@ -69,16 +71,21 @@ $( document ).ready(function() {
     dataType : 'json',
     encode : true
   }).done(function(data){
-    setData(data);
+    app.setData(data);
     console.log(data);
   }).fail(function (data) {
-    // for debug
-    //let dataSheet = JSON.parse(data.responseText)
-    setData(data);
+    app.setData(data);
+    console.log("PROBLEM:");
     console.log(data);
     console.log(data.responseText);
-    //console.log(data);
   });
+}
 
+$("#sportsmen").change(function()
+{
+  updateData();
+});
 
+$( document ).ready(function() {
+  updateData();
 });
