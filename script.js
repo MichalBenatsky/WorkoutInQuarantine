@@ -37,9 +37,9 @@ function setData(data)
   let app = new Vue({
     data: {
       workouts: [
-        { id:0, type: 'PushUp', imgsrc:'img/PushUp.svg', amount: data.pushUp},
-        { id:1, type: 'PullUp', imgsrc:'img/PullUp.svg', amount: data.pullUp},
-        { id:2, type: 'Squat', imgsrc:'img/Squat.svg', amount: data.squat}
+        { id:0, type: 'PushUp', imgsrc:'img/pushUp.svg', amount: data.pushUp},
+        { id:1, type: 'PullUp', imgsrc:'img/pullUp.svg', amount: data.pullUp},
+        { id:2, type: 'Squat', imgsrc:'img/squat.svg', amount: data.squat}
       ],
       plusValue: 5,
       minusValue: 1
