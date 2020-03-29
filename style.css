@@ -6,17 +6,14 @@
     --color4: #d49a41;
     --widgetWidth: 200px;
 
-    --workoutBoxWidth: 30%;
+    --workoutBoxWidth: 27%;
   }
 
 body {font-family: 'Open Sans', sans-serif; background-color: var(--color0);margin: 0px;}
 h1 {color: var(--color4); margin:auto; display: block;}
 h3 {color: var(--color4);}
 #app {background-color: var(--color0); width: 100%; text-align: center; display: flex; flex-wrap: wrap; justify-content: space-evenly;}
-.counter {margin-right: 5px; margin-left: 5pxs; background-color: var(--color1);}
-.buttons {width: var(--workoutBoxWidth); var(--workoutBoxWidth); display: flex; font-size: 2em;}
-.button {width: 50%; height: 100%; opacity: 0.5; }
-.button:hover{cursor: pointer;}
+.counter {width: var(--workoutBoxWidth); margin: 3%; background-color: var(--color1);}
 .plus {background-color: var(--color1);}
 .minus {background-color: var(--color2);}
-img {width: var(--workoutBoxWidth); height: var(--workoutBoxWidth); filter: invert(.8);}
+img {width: 100%; height: 100%; filter: invert(.8);}
