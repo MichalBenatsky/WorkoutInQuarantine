@@ -34,7 +34,10 @@ let app = new Vue({
     ],
     plusValue: 5,
     minusValue: 1,
-    uploadDataNeeded: false
+    uploadDataNeeded: false,
+    dataReady: false,
+    state: {},
+    currentPerson: ""
   },
   el: '#app',
   created: function () {
@@ -56,24 +59,39 @@ let app = new Vue({
 
       this.uploadDataNeeded = true;
     },
+    updateVisibleData: function(jsonData)
+    {
+      if (this.dataReady)
+      {
+        let workoutData = this.state[this.currentPerson];
+
+        let hashMap = [];
+        for (let i = 0; i < this.workouts.length; ++i)
+          hashMap[this.workouts.type] = this.workouts[i];
+        
+        for (let i = 0; i < this.workouts.length; ++i)
+        {
+          this.workouts[i].amount = workoutData[this.workouts[i].type];
+        }
+      }
+    },
+    setPerson: function(person){
+      this.currentPerson = person;
+      if (this.dataReady)
+        this.updateVisibleData();
+    },
     setData: function(jsonData)
     {
-      let hashMap = [];
-      for (let i = 0; i < this.workouts.length; ++i)
-        hashMap[this.workouts.type] = this.workouts[i];
-      
-      for (let i = 0; i < this.workouts.length; ++i)
-      {
-        this.workouts[i].amount = jsonData[this.workouts[i].type];
-      }
+      console.log(jsonData);
+      this.state = jsonData;
+      this.dataReady = true;
+      this.updateVisibleData();
     },
     uploadData: function()
     {
       let formData = { "person": $("#sportsmen").val(), "command" : "WRITE"};
       for (let i = 0; i < this.workouts.length; ++i)
         formData[this.workouts[i].type] = this.workouts[i].amount;
-
-      console.log(formData);
 
       $.ajax({
         type : 'POST',
@@ -88,8 +106,8 @@ let app = new Vue({
 
 function updateData()
 {
-  let formData = { "person": $("#sportsmen").val(), "command" : "READ"};
-  console.log(formData);
+  console.log("UPDATING");
+  let formData = { "person": $("#sportsmen").val(), "command" : "READ", "protocol": 2};
   
   // process the form
   $.ajax({
@@ -100,19 +118,16 @@ function updateData()
     encode : true
   }).done(function(data){
     app.setData(data);
+  }).fail(function(data){
     console.log(data);
-  }).fail(function (data) {
-    app.setData(data);
-    console.log("PROBLEM:");
-    console.log(data);
-    console.log(data.responseText);
   });
 }
 
 $("#sportsmen").change(function()
 {
   window.localStorage.setItem("person", $("#sportsmen").val());
-  updateData();
+  app.currentPerson = $("#sportsmen").val();
+  app.updateVisibleData();
 });
 
 $( document ).ready(function() {
@@ -120,6 +135,24 @@ $( document ).ready(function() {
   {
     $("#sportsmen").val(window.localStorage.getItem("person"));
   }
+  app.setPerson($("#sportsmen").val());
 
-  updateData();
+  let focused = true;
+  window.onfocus = function() {
+      console.log("FOCUS");
+      focused = true;
+  };
+  window.onblur = function() {
+      console.log("UN-FOCUSED");
+      focused = false;
+  };
+
+  function callUpdate()
+  {
+    if (focused)
+      updateData();
+
+    setTimeout(callUpdate, 20000);
+  }
+  callUpdate();
 });
