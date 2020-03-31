@@ -1,11 +1,12 @@
 Vue.component('workoutcounter', {
-  props: ['id', 'type', 'imgsrc', 'amount'],
+  props: ['id', 'type', 'imgsrc', 'amount', 'bestsportsmen', 'bestamount'],
   template: ` <div class="counter" v-on:click="click">
                 <h2>{{ type }}</h2>
                 <h3>{{ amount }}</h3>
                 <div class="stack">
                   <img class="stackUp" v-bind:src="imgsrc"  >
                 </div>
+                <h4>Best {{bestsportsmen}}:{{bestamount}}</h4>
               </div>`,
   methods: {
     click: function (e) {
@@ -28,9 +29,9 @@ Vue.component('workoutcounter', {
 let app = new Vue({
   data: {
     workouts: [
-      { id:0, type: 'pushUp', imgsrc:'img/pushUp.svg', amount: 0},
-      { id:1, type: 'pullUp', imgsrc:'img/pullUp.svg', amount: 0},
-      { id:2, type: 'squat', imgsrc:'img/squat.svg', amount: 0}
+      { id:0, type: 'pushUp', imgsrc:'img/pushUp.svg', amount: 0, bestSportsmen: "", bestAmount: 0},
+      { id:1, type: 'pullUp', imgsrc:'img/pullUp.svg', amount: 0, bestSportsmen: "", bestAmount: 0},
+      { id:2, type: 'squat', imgsrc:'img/squat.svg', amount: 0, bestSportsmen: "", bestAmount: 0}
     ],
     plusValue: 5,
     minusValue: 1,
@@ -40,12 +41,11 @@ let app = new Vue({
     currentPerson: ""
   },
   el: '#app',
-  created: function () {
+  created: function () { 
     setInterval(function () {
       if (this.uploadDataNeeded == true)
       {
         this.uploadData();
-        this.uploadDataNeeded = false;
       }
     }.bind(this), 5000); 
   },
@@ -53,11 +53,24 @@ let app = new Vue({
     eventChild: function(id, change) 
     {
       if (change === "add")
-        this.workouts[id].amount = this.workouts[id].amount + this.plusValue;
+        this.workouts[id].amount = this.workouts[id].amount + this.plusValue; 
       else
         this.workouts[id].amount = this.workouts[id].amount - this.minusValue;
 
       this.uploadDataNeeded = true;
+    },
+    findBest: function(type)
+    {
+      let returnData = {name: "zatim nikdo", amount: 0};
+      for (let person in this.state) 
+      {
+        if (this.state[person][type] > returnData.amount)
+        {
+          returnData.name = person;
+          returnData.amount = this.state[person][type];
+        }
+      }
+      return returnData;
     },
     updateVisibleData: function(jsonData)
     {
@@ -72,6 +85,10 @@ let app = new Vue({
         for (let i = 0; i < this.workouts.length; ++i)
         {
           this.workouts[i].amount = workoutData[this.workouts[i].type];
+          
+          let best = this.findBest(this.workouts[i].type);
+          this.workouts[i].bestSportsmen = best.name;
+          this.workouts[i].bestAmount = best.amount;
         }
       }
     },
@@ -82,10 +99,12 @@ let app = new Vue({
     },
     setData: function(jsonData)
     {
-      console.log(jsonData);
-      this.state = jsonData;
-      this.dataReady = true;
-      this.updateVisibleData();
+      if(!this.uploadDataNeeded)
+      {
+        this.state = jsonData;
+        this.dataReady = true;
+        this.updateVisibleData();
+      }
     },
     uploadData: function()
     {
@@ -94,11 +113,16 @@ let app = new Vue({
         formData[this.workouts[i].type] = this.workouts[i].amount;
 
       $.ajax({
+        context: this,
         type : 'POST',
         url  : 'https://script.google.com/macros/s/AKfycbzdld1IiV4CPKCTHR3YqT8U-H7Kc_hpjdFZRWeJp8B5Zea24yQ/exec',
         data : formData,
         dataType : 'json',
         encode : true
+      }).always(function()
+      {
+        this.uploadDataNeeded = false;
+        updateData();
       });
     }
   }
@@ -106,7 +130,6 @@ let app = new Vue({
 
 function updateData()
 {
-  console.log("UPDATING");
   let formData = { "person": $("#sportsmen").val(), "command" : "READ", "protocol": 2};
   
   // process the form
@@ -119,7 +142,6 @@ function updateData()
   }).done(function(data){
     app.setData(data);
   }).fail(function(data){
-    console.log(data);
   });
 }
 
@@ -139,11 +161,10 @@ $( document ).ready(function() {
 
   let focused = true;
   window.onfocus = function() {
-      console.log("FOCUS");
+      updateData(); 
       focused = true;
   };
   window.onblur = function() {
-      console.log("UN-FOCUSED");
       focused = false;
   };
 
