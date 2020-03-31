@@ -10,7 +10,7 @@
     --workoutBoxWidth: 35%;
   }
 
-body {text-align: center; font-family: 'Open Sans', sans-serif; background-color: var(--color0);margin: 0px;}
+body {text-align: center; font-family: 'Open Sans', sans-serif; background-color: var(--color0);margin: 0px; touch-action: manipulation;}
 h1 {color: var(--color4); margin:auto; display: block; }
 h2 {color: var(--color5); font-size: 180%;}
 h3 {color: var(--color4); font-size: 150%;}
